@@ -179,3 +179,4 @@ backend/confluence
 backend/imported
 backend/reports
 sample_data/
+*.pem
