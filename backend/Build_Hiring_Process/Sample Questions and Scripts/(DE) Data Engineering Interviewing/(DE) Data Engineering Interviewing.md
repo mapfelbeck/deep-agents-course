@@ -1,2 +1,0 @@
-# (DE) Data Engineering Interviewing
-

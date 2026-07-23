@@ -1,2 +1,0 @@
-# AUS Platform Engineering
-

@@ -1,2 +1,0 @@
-# (SO) Solution Ownership Interviewing
-

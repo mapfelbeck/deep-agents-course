@@ -1,2 +1,0 @@
-# AUS Solution Ownership
-

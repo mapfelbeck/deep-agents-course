@@ -1,2 +1,0 @@
-# (XD) Experience Design Interviewing
-

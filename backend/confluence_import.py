@@ -1,7 +1,7 @@
-### Netskope nonsense...
+### Netskope workaround ###
 import truststore
 truststore.inject_into_ssl()
-########################
+###########################
 
 import argparse
 import os
@@ -133,6 +133,15 @@ def export_page(conf, page_id, parent_dir: Path, visited: set, used_in_parent: s
         export_page(conf, child["id"], page_dir, visited, child_used, count)
 
 
+def run_export(page_id: str, out: str = "output") -> int:
+    """Export a Confluence page tree to Markdown. Returns number of pages exported."""
+    conf = connect()
+    count = [0]
+    export_page(conf, page_id, Path(out), set(), set(), count)
+    print(f"Done. Exported {count[0]} page(s).")
+    return count[0]
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Recursively export a Confluence page tree to local Markdown files."
@@ -140,11 +149,7 @@ def main():
     parser.add_argument("--page-id", required=True, help="Root Confluence page ID to export")
     parser.add_argument("--out", default="output", help="Base output directory (default: output)")
     args = parser.parse_args()
-
-    conf = connect()
-    count = [0]
-    export_page(conf, args.page_id, Path(args.out), set(), set(), count)
-    print(f"Done. Exported {count[0]} page(s).")
+    run_export(args.page_id, args.out)
 
 
 if __name__ == "__main__":

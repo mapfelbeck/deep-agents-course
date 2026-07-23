@@ -1,2 +1,0 @@
-# (PE) Platform Engineering Interviewing
-
