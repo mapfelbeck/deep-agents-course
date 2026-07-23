@@ -18,7 +18,7 @@ Build a Python tool that:
 
 ### Existing setup (already in the repo)
 
-- `backend/read_confuence.py` — a working proof-of-concept that connects and fetches one page.
+- `backend/read_confluence.py` — a working proof-of-concept that connects and fetches one page.
 - `.env` file is loaded via `python-dotenv`. Required variables:
   - `CONFLUENCE_URL` — e.g. `https://your-domain.atlassian.net/wiki`
   - `ATLASSIAN_USER` — the account email.
@@ -46,7 +46,7 @@ Add a Markdown converter. Use **`markdownify`** (simple, HTML → Markdown, hand
 
 ## 2. File to Create
 
-Create a new file: `backend/confluence_export.py`. Do **not** overwrite the existing `read_confuence.py`.
+Create a new file: `backend/confluence_export.py`. Do **not** overwrite the existing `read_confluence.py`.
 
 ---
 

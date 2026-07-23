@@ -175,5 +175,7 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
+backend/confluence
 backend/imported
+backend/reports
 sample_data/
