@@ -103,6 +103,26 @@ def redact_with_mapping(text: str, language: str = "en", score_threshold: float 
 
     return redacted, mapping
 
+def redact(text: str, language: str = "en", score_threshold: float = 0.35) -> str:
+    """Redact PII in `text` and return only the redacted text (no mapping).
+
+    This is a convenience wrapper over `redact_with_mapping` for callers that
+    do not need to reverse the redaction.
+
+    Args:
+        text: The text to redact.
+        language: Presidio language code (default "en").
+        score_threshold: Minimum confidence score for a detection to be
+            redacted (default 0.35).
+
+    Returns:
+        The redacted text.
+    """
+    redacted, _mapping = redact_with_mapping(
+        text, language=language, score_threshold=score_threshold
+    )
+    return redacted
+
 def unredact(text: str, mapping: Dict[str, str]) -> str:
     # Replace tokens back to original
     # Sort by length to avoid partial overlaps

@@ -15,6 +15,7 @@ from deepagents import create_deep_agent
 from models import openai
 from confluence_tool import import_confluence
 from pdf_tool import convert_pdf_to_markdown
+from pii_redact import redact as redact_text
 
 # Confluence root page for the Slalom hiring/interview guidelines.
 CONFLUENCE_ROOT_PAGE_ID = "56819899"
@@ -80,26 +81,30 @@ def ensure_confluence_cache(confluence_dir: Path) -> None:
 
 
 def resume_to_markdown(resume_path: Path) -> str:
-    """Return the resume content as Markdown, converting from PDF when needed."""
+    """Return the resume content as Markdown, converting from PDF when needed.
+
+    In all cases the returned text is PII-redacted before it reaches the agent.
+    """
     if not resume_path.is_file():
         raise FileNotFoundError(f"Resume file not found: {resume_path}")
 
     suffix = resume_path.suffix.lower()
     if suffix == ".md":
-        md_path = resume_path
+        # Read and redact in-memory; do NOT modify the source .md file.
+        return redact_text(resume_path.read_text(encoding="utf-8"))
     elif suffix == ".pdf":
-        print(f"[info] Converting PDF resume '{resume_path}' to Markdown...")
+        print(f"[info] Converting PDF resume '{resume_path}' to Markdown (redacted)...")
         result = convert_pdf_to_markdown.invoke({"input_path": str(resume_path)})
         print(f"[info] {result}")
         md_path = resume_path.with_suffix(".md")
         if not md_path.is_file():
             raise RuntimeError(f"PDF conversion did not produce '{md_path}'.")
+        # The converted .md is already redacted (redact defaults to True).
+        return md_path.read_text(encoding="utf-8")
     else:
         raise ValueError(
             f"Unsupported resume type '{suffix}'. Provide a .md or .pdf file."
         )
-
-    return md_path.read_text(encoding="utf-8")
 
 
 def load_criteria(confluence_dir: Path, char_budget: int = CRITERIA_CHAR_BUDGET) -> str:
