@@ -90,6 +90,7 @@ export function NewInterview() {
             onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
           />
           <p className="help">Accepts .pdf or .md. Redacted automatically.</p>
+          <p>If no resume is provided, the system will generate a general interview sheet for the role.</p>
           {fileError && (
             <p className="help" style={{ color: 'var(--color-accent-coral)' }}>
               {fileError}

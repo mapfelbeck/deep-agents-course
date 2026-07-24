@@ -55,6 +55,16 @@ export function useCreateInterview() {
   })
 }
 
+export function useDeleteInterview() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.deleteInterview(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['interviews'] })
+    },
+  })
+}
+
 export function useSaveNotes(interviewId: string) {
   return useMutation({
     mutationFn: (notesMd: string) => api.saveNotes(interviewId, notesMd),

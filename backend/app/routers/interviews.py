@@ -128,3 +128,14 @@ def get_interview(
         resume_md=interview.resume_md,
         notes_md=notes_md,
     )
+
+
+@router.delete("/{interview_id}", status_code=204)
+def delete_interview(
+    interview_id: str,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> None:
+    interview = _get_owned(db, interview_id, user)
+    db.delete(interview)
+    db.commit()

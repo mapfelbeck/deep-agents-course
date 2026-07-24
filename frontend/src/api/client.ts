@@ -57,6 +57,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     }
     throw new Error(detail)
   }
+  if (res.status === 204) {
+    return undefined as T
+  }
   return (await res.json()) as T
 }
 
@@ -79,6 +82,9 @@ export const api = {
 
   getInterview: (id: string) =>
     request<InterviewDetail>(`/api/interviews/${id}`),
+
+  deleteInterview: (id: string) =>
+    request<void>(`/api/interviews/${id}`, { method: 'DELETE' }),
 
   getNotes: (id: string) => request<Notes>(`/api/interviews/${id}/notes`),
 

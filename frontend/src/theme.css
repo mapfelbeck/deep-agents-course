@@ -233,6 +233,25 @@ a:focus-visible {
   text-decoration: underline;
 }
 
+.btn-danger {
+  background: transparent;
+  color: #a3121f;
+  border-color: var(--color-accent-coral);
+  font-size: 0.9rem;
+  padding: 0.4rem 0.85rem;
+}
+
+.btn-danger:hover {
+  background: #fff5f6;
+  text-decoration: underline;
+}
+
+.btn-danger:disabled {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
 /* Status pills — never color-only: always include text */
 .pill {
   display: inline-block;
@@ -352,6 +371,14 @@ a:focus-visible {
   gap: 1rem;
   text-decoration: none;
   color: inherit;
+}
+.interview-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.interview-item-link {
+  flex: 1;
 }
 .interview-list a:hover .interview-role {
   text-decoration: underline;
