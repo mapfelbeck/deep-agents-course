@@ -169,7 +169,7 @@ Create `backend/templates/interview_notes_template.md`. It defines the structure
 the agent fills in and is fully user-editable. Proposed starting structure:
 
 ```markdown
-# Interview Prep — <role> — <candidate name or "role-based">
+# Interview Sheet — <role> — <candidate name or "role-based">
 
 ## Role Summary
 - Role: <role>
@@ -232,7 +232,7 @@ backend/
   pii_redact.py                      # reuse
   models.py                          # reuse
 confluence/                          # reuse — cached guideline markdown
-interviews/                          # NEW — generated interview prep sheets
+interviews/                          # NEW — generated interview sheets
 docs/
   interview_plan.md                  # THIS plan
 ```

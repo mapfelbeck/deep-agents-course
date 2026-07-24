@@ -79,41 +79,6 @@ def _cache_age_seconds(confluence_dir: Path) -> float | None:
     return max(0.0, time.time() - max(mtimes))
 
 
-def ensure_confluence_cache(
-    confluence_dir: Path,
-    max_age_seconds: int = CONFLUENCE_CACHE_TTL_SECONDS,
-) -> None:
-    """Ensure the criteria cache exists and is fresh; import it from Confluence if
-    the cache is missing, empty, or older than max_age_seconds."""
-    age = _cache_age_seconds(confluence_dir)
-
-    if age is not None and age <= max_age_seconds:
-        print(
-            f"[info] Using cached guidelines in '{confluence_dir}' "
-            f"(age {age / 86400:.1f} day(s))."
-        )
-        return
-
-    if age is None:
-        print(f"[info] '{confluence_dir}' missing or empty; importing from Confluence...")
-    else:
-        print(
-            f"[info] Cached guidelines in '{confluence_dir}' are stale "
-            f"(age {age / 86400:.1f} day(s), max {max_age_seconds / 86400:.1f}); "
-            "refreshing from Confluence..."
-        )
-
-    result = import_confluence.invoke(
-        {"page_id": CONFLUENCE_ROOT_PAGE_ID, "out": str(confluence_dir)}
-    )
-    print(f"[info] {result}")
-
-    if not (confluence_dir.is_dir() and any(confluence_dir.rglob("*.md"))):
-        raise RuntimeError(
-            f"Confluence import did not produce any Markdown in '{confluence_dir}'."
-        )
-
-
 def resume_to_markdown(resume_path: Path) -> str:
     """Return the resume content as Markdown, converting from PDF when needed.
 

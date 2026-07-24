@@ -182,7 +182,7 @@ def unredact(text: str, mapping: Dict[str, str]) -> str:
     return text
 
 if __name__ == "__main__":
-    sample = """John Q. Public
+    sample1 = """John Q. Public
     Email: john.public@example.com
     Phone: (555) 123-4567
     LinkedIn: https://www.linkedin.com/in/johnpublic
@@ -190,7 +190,36 @@ if __name__ == "__main__":
     Address: 1234 Main St, Seattle, WA 98101
     """
 
-    redacted, mapping = redact_with_mapping(sample)
-    print("Redacted:\n", redacted)
-    print("Mapping:\n", mapping)
-    print("Restored:\n", unredact(redacted, mapping))
+    sample2 = """ANTHONY RIVERA
+    Email: anthony.rivera@gmail.com
+    Phone: (312) 884-2019
+    LinkedIn: https://www.linkedin.com/in/anthonyrivera
+    GitHub: github.com/arivera-dev
+    Address: 4820 N Kedzie Ave, Chicago, IL 60625
+    """
+
+    sample3 = """DIEGO TREVIÑO FERRER
+    Email: diego.trevino.ferrer@outlook.com
+    Phone: (786) 401-5573
+    LinkedIn: https://www.linkedin.com/in/diegotrevinoferrer
+    GitHub: github.com/dtrevino
+    Address: 2115 SW 22nd St, Miami, FL 33145
+    """
+
+    sample4 = """Juan Sebastian Cabra
+    Email: js.cabra@protonmail.com
+    Phone: (469) 233-7148
+    LinkedIn: https://www.linkedin.com/in/juansebastiancabra
+    GitHub: github.com/jscabra
+    Address: 908 Elm St, Dallas, TX 75202
+    """
+
+    all_samples = [sample1, sample2, sample3, sample4]
+    for i, sample in enumerate(all_samples, start=1):
+        print(f"Processing sample{i}...")
+        redacted, mapping = redact_with_mapping(sample)
+        print("Redacted:\n", redacted)
+        print("Mapping:\n", mapping)
+        print("Restored:\n", unredact(redacted, mapping))
+
+    # Remove the redundant processing of 'sample' outside the loop

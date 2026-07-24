@@ -1,4 +1,4 @@
-# Interview Prep — {{role}} — {{candidate}}
+# Interview Notes — {{role}}
 
 <!--
 Editable template for the interview notes agent.

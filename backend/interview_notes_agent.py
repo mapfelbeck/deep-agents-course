@@ -261,7 +261,7 @@ def main() -> int:
     parser.add_argument(
         "--output-dir",
         default="interviews",
-        help="Folder to write the interview prep sheet into (default: interviews)",
+        help="Folder to write the interview sheet into (default: interviews)",
     )
     parser.add_argument(
         "--template",
@@ -312,7 +312,7 @@ def main() -> int:
         system_prompt=SYSTEM_PROMPT,
     )
 
-    print("[info] Generating interview prep sheet...")
+    print("[info] Generating interview sheet...")
     result = agent.invoke(
         {
             "messages": [
@@ -337,7 +337,7 @@ def main() -> int:
     print("\n" + "=" * 72 + "\n")
 
     dest = write_notes(notes, resume_path, args.role, interview_dir)
-    print(f"[info] Interview prep sheet written to '{dest}'.")
+    print(f"[info] Interview sheet written to '{dest}'.")
     return 0
 
 
