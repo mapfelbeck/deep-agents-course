@@ -8,6 +8,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 import argparse
 import sys
+import time
 from pathlib import Path
 
 from deepagents import create_deep_agent
@@ -31,6 +32,10 @@ PRIORITY_DIR_KEYWORDS = (
 
 # Rough character budget for the concatenated criteria passed to the model.
 CRITERIA_CHAR_BUDGET = 120_000
+
+# How long the cached Confluence guidelines are considered fresh before they are
+# re-imported. Defaults to 7 days.
+CONFLUENCE_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60
 
 SYSTEM_PROMPT = (
     "You are a Slalom hiring evaluator. You assess a candidate resume STRICTLY "
@@ -61,14 +66,43 @@ SYSTEM_PROMPT = (
 )
 
 
-def ensure_confluence_cache(confluence_dir: Path) -> None:
-    """Ensure the criteria cache exists; import it from Confluence if missing/empty."""
-    has_markdown = confluence_dir.is_dir() and any(confluence_dir.rglob("*.md"))
-    if has_markdown:
-        print(f"[info] Using cached guidelines in '{confluence_dir}'.")
+def _cache_age_seconds(confluence_dir: Path) -> float | None:
+    """Return the age in seconds of the freshest cached Markdown file.
+
+    Returns None when the cache is missing or contains no Markdown files.
+    """
+    if not confluence_dir.is_dir():
+        return None
+    mtimes = [p.stat().st_mtime for p in confluence_dir.rglob("*.md")]
+    if not mtimes:
+        return None
+    return max(0.0, time.time() - max(mtimes))
+
+
+def ensure_confluence_cache(
+    confluence_dir: Path,
+    max_age_seconds: int = CONFLUENCE_CACHE_TTL_SECONDS,
+) -> None:
+    """Ensure the criteria cache exists and is fresh; import it from Confluence if
+    the cache is missing, empty, or older than max_age_seconds."""
+    age = _cache_age_seconds(confluence_dir)
+
+    if age is not None and age <= max_age_seconds:
+        print(
+            f"[info] Using cached guidelines in '{confluence_dir}' "
+            f"(age {age / 86400:.1f} day(s))."
+        )
         return
 
-    print(f"[info] '{confluence_dir}' missing or empty; importing from Confluence...")
+    if age is None:
+        print(f"[info] '{confluence_dir}' missing or empty; importing from Confluence...")
+    else:
+        print(
+            f"[info] Cached guidelines in '{confluence_dir}' are stale "
+            f"(age {age / 86400:.1f} day(s), max {max_age_seconds / 86400:.1f}); "
+            "refreshing from Confluence..."
+        )
+
     result = import_confluence.invoke(
         {"page_id": CONFLUENCE_ROOT_PAGE_ID, "out": str(confluence_dir)}
     )
@@ -184,7 +218,7 @@ def main() -> int:
 
     resume_path = Path(args.resume)
     confluence_dir = Path(args.confluence_dir)
-    report_dir = Path(args.report_dir)
+    report_dir = Path(args.output_dir)
 
     try:
         ensure_confluence_cache(confluence_dir)
