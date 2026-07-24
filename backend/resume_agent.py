@@ -176,7 +176,7 @@ def main() -> int:
         help="Folder holding cached Confluence guideline markdown (default: confluence)",
     )
     parser.add_argument(
-        "--report-dir",
+        "--output-dir",
         default="reports",
         help="Folder to write the evaluation report into (default: reports)",
     )
