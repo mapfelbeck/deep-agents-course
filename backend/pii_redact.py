@@ -9,7 +9,7 @@ from typing import Dict, List, Tuple
 # python -m spacy download en_core_web_lg
 nlp_engine = SpacyNlpEngine(models=[{"lang_code": "en", "model_name": "en_core_web_lg"}])
 # a trained model would work better but blank should be fine
-#nlp_engine = SpacyNlpEngine(models=[{"lang_code": "en", "model_name": "blank:en"}])
+# nlp_engine = SpacyNlpEngine(models=[{"lang_code": "en", "model_name": "blank:en"}])
 analyzer = AnalyzerEngine(nlp_engine=nlp_engine, supported_languages=["en"])
 anonymizer = AnonymizerEngine()
 
@@ -48,6 +48,53 @@ analyzer.registry.add_recognizer(linkedin_recognizer)
 analyzer.registry.add_recognizer(github_recognizer)
 analyzer.registry.add_recognizer(personal_site_recognizer)
 
+# 2b) Helpers to keep non-PII "years of experience" / skill mentions intact.
+# Presidio's default recognizers frequently misclassify experience durations
+# (e.g. "5 years", "3+ years") as DATE_TIME, and tool/technology names
+# (e.g. "Python", "AWS") as ORGANIZATION. Neither is actually PII, so we
+# filter these out before redacting.
+EXPERIENCE_DURATION_RE = re.compile(
+    r"^\d+(?:\.\d+)?\+?\s*(?:years?|yrs?|months?|mos?)$", re.IGNORECASE
+)
+
+SKILL_CONTEXT_RE = re.compile(
+    r"(?:"
+    r"(?:experience|expertise|proficiency|proficient|skilled|skill|knowledge|"
+    r"familiar|hands-on|exposure|certified|certification)\s+(?:with|in|using|of)"
+    r"|"
+    r"\d+(?:\.\d+)?\+?\s*(?:years?|yrs?|months?|mos?)\s+(?:with|in|using|of)"
+    r")\s*\Z",
+    re.IGNORECASE,
+)
+
+
+def _is_experience_duration(entity_type: str, matched_text: str) -> bool:
+    """True for DATE_TIME matches that are really a duration of experience
+    (e.g. "5 years", "3+ years", "18 months") rather than a calendar date."""
+    return entity_type == "DATE_TIME" and bool(
+        EXPERIENCE_DURATION_RE.match(matched_text.strip())
+    )
+
+
+def _is_skill_mention(entity_type: str, matched_text: str, text: str, start: int, window: int = 40) -> bool:
+    """True for matches that look like a tool/technology named directly in a
+    skills/experience phrase (e.g. "experience with Python", "3 years using
+    AWS", "familiar with Docker") rather than real PII. Requires one of the
+    skill-indicating phrases to appear immediately before the match so that
+    generic mentions like "worked at Acme Corporation" are left alone.
+
+    spaCy's NER sometimes misclassifies tool/technology names as ORGANIZATION
+    or even PERSON (e.g. "Docker"). For PERSON/NRP/MISC we only exempt
+    single-token matches, since real personal names in this context almost
+    always contain a space (e.g. "John Smith")."""
+    if entity_type in ("PERSON", "NRP", "MISC") and " " in matched_text.strip():
+        return False
+    if entity_type not in ("ORGANIZATION", "ORG", "PERSON", "NRP", "MISC"):
+        return False
+    preceding = text[max(0, start - window):start]
+    return bool(SKILL_CONTEXT_RE.search(preceding))
+
+
 # 3) Helper to build consistent tokens and preserve reversibility
 def token_for(entity: str, value: str, counter: Dict[str, int]) -> str:
     # Option A: deterministic hash per value per entity
@@ -82,6 +129,10 @@ def redact_with_mapping(text: str, language: str = "en", score_threshold: float 
             continue
         original = text[r.start:r.end]
         entity = r.entity_type.upper()
+
+        if _is_experience_duration(entity, original) or _is_skill_mention(entity, original, text, r.start):
+            continue
+
         token = token_for(entity, original, counters)
 
         mapping[token] = original
