@@ -123,3 +123,10 @@ wrapt==2.2.2
 xxhash==3.8.1
 yarl==1.24.5
 zstandard==0.25.0
+
+# --- Web backend (site_plan Phase 1+) ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+alembic==1.14.0
+psycopg[binary]==3.2.3

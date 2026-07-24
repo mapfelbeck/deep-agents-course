@@ -1,0 +1,391 @@
+/* Brand design tokens derived from docs/brand_guide.md.
+   Slalom Blue is the primary and must appear in every view. Pair with a single
+   accent (default: Cyan). Neutrals are unrestricted. */
+:root {
+  /* Core palette */
+  --color-primary: #0c62fb; /* Slalom Blue */
+  --color-primary-dark: #002faf; /* Slalom Dark Blue */
+  --color-accent-cyan: #1be1f2;
+  --color-accent-coral: #ff4d5f;
+  --color-accent-purple: #c7b9ff;
+  --color-accent-chart: #deff4d;
+
+  /* Neutrals */
+  --color-black: #000000;
+  --color-text: #1a1a1a; /* readable body (AA on white) */
+  --color-text-muted: #666666; /* Dark Gray, secondary text only */
+  --color-border: #e6e6e6; /* Light Gray */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f6f8fb;
+
+  /* Typography */
+  --font-sans: 'Slalom Sans', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+
+  /* Type scale */
+  --fs-h1: 2.75rem;
+  --lh-h1: 0.95;
+  --fs-h2: 2rem;
+  --lh-h2: 1;
+  --fs-h3: 1.5rem;
+  --lh-h3: 1.1;
+  --fs-body: 1.0625rem;
+  --lh-body: 1.4;
+  --fs-eyebrow: 0.8125rem;
+  --tracking-eyebrow: 0.075em;
+
+  --radius: 8px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  background: var(--color-surface-alt);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  /* Sentence case, flush-left, ragged-right */
+  text-align: left;
+  color: var(--color-black);
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+}
+h2 {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+}
+h3 {
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+}
+
+a {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 0.5rem;
+}
+
+/* Layout */
+.app-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  border-bottom: 4px solid var(--color-primary);
+  background: var(--color-surface);
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.app-header .brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.app-nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.app-nav a {
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.app-nav a:hover,
+.app-nav a[aria-current='page'] {
+  color: var(--color-primary-dark);
+  border-bottom-color: var(--color-primary);
+  text-decoration: none;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* Cards & surfaces */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+
+/* Forms */
+.field {
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.field > label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.field .help {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+}
+
+select,
+input[type='file'],
+textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+select:focus,
+input:focus,
+textarea:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--color-accent-cyan);
+  outline-offset: 2px;
+}
+
+/* Buttons */
+.btn {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  padding: 0.6rem 1.15rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  /* Non-color-only affordance */
+  text-decoration: underline;
+}
+
+.btn-primary:disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary);
+}
+
+.btn-ghost:hover {
+  background: var(--color-surface-alt);
+  text-decoration: underline;
+}
+
+/* Status pills — never color-only: always include text */
+.pill {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+}
+.pill.ready {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+.pill.error {
+  border-color: var(--color-accent-coral);
+  color: #a3121f;
+}
+.pill.generating,
+.pill.queued {
+  border-color: var(--color-accent-cyan);
+  color: #036c78;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--color-primary-dark);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Markdown rendering */
+.markdown {
+  line-height: 1.55;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  margin-top: 1.4rem;
+}
+.markdown table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.markdown th,
+.markdown td {
+  border: 1px solid var(--color-border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+.markdown code {
+  background: var(--color-surface-alt);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+}
+.markdown pre {
+  background: var(--color-surface-alt);
+  padding: 0.8rem;
+  border-radius: var(--radius);
+  overflow: auto;
+}
+
+/* Note blocks */
+.note-block {
+  margin: 0.5rem 0 1.25rem;
+}
+.note-block > label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  margin-bottom: 0.3rem;
+}
+.note-block textarea {
+  min-height: 3.25rem;
+  resize: vertical;
+  background: var(--color-surface-alt);
+}
+
+.save-status {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* Lists */
+.interview-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.interview-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+}
+.interview-list a:hover .interview-role {
+  text-decoration: underline;
+}
+.interview-role {
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.error-banner {
+  border: 1px solid var(--color-accent-coral);
+  background: #fff5f6;
+  color: #a3121f;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.spinner {
+  display: inline-block;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

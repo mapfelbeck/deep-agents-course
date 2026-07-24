@@ -59,6 +59,15 @@ cover/
 *.mo
 *.pot
 
+# Interview Sheet site — backend/runtime artifacts
+backend/app.db
+backend/uploads/
+.env
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
 # Django stuff:
 *.log
 local_settings.py

@@ -16,7 +16,7 @@ from deepagents import create_deep_agent
 from models import openai
 from confluence_tool import import_confluence
 from pdf_tool import convert_pdf_to_markdown
-from resume_agent import (
+from app.agent.shared import (
     CONFLUENCE_ROOT_PAGE_ID,
     CRITERIA_CHAR_BUDGET,
     ensure_confluence_cache,
