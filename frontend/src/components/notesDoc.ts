@@ -8,6 +8,8 @@ export interface SheetSegment {
   markdown: string
   /** Short label describing the anchor, shown on the note block. */
   label: string
+  /** Whether this segment is a question (gets a Notes box) vs. a heading. */
+  isQuestion: boolean
 }
 
 export interface ParsedSheet {
@@ -15,11 +17,17 @@ export interface ParsedSheet {
   segments: SheetSegment[]
 }
 
-// Anchors: section headings (## / ### / ####) and numbered questions ("1. ...").
-const ANCHOR_RE = /^(#{2,4}\s+.+|\s*\d+\.\s+.+)$/
+// Anchors that break the sheet into segments: section headings (## / ### / ####)
+// and questions (numbered items, plus bullets under a "…Questions…" heading).
+const HEADING_RE = /^#{2,4}\s+.+$/
+const NUMBERED_RE = /^\s*\d+\.\s+.+$/
+const BULLET_RE = /^\s*[-*]\s+.+$/
 
 function anchorLabel(line: string): string {
-  const text = line.replace(/^#{2,4}\s+/, '').replace(/^\s*\d+\.\s+/, '')
+  const text = line
+    .replace(/^#{2,4}\s+/, '')
+    .replace(/^\s*\d+\.\s+/, '')
+    .replace(/^\s*[-*]\s+/, '')
   const clean = text.replace(/[*_`]/g, '').trim()
   return clean.length > 80 ? `${clean.slice(0, 77)}…` : clean
 }
@@ -30,8 +38,11 @@ export function parseSheet(sheetMd: string): ParsedSheet {
   const preambleLines: string[] = []
   const segments: SheetSegment[] = []
 
-  let current: { label: string; lines: string[] } | null = null
+  let current: { label: string; lines: string[]; isQuestion: boolean } | null =
+    null
   let index = 0
+  // Nearest preceding heading text, used to decide if a bullet is a question.
+  let currentHeading = ''
 
   const flush = () => {
     if (current) {
@@ -39,14 +50,25 @@ export function parseSheet(sheetMd: string): ParsedSheet {
         key: `a${index++}`,
         markdown: current.lines.join('\n'),
         label: current.label,
+        isQuestion: current.isQuestion,
       })
     }
   }
 
   for (const line of lines) {
-    if (ANCHOR_RE.test(line)) {
+    const isHeading = HEADING_RE.test(line)
+    const isNumbered = NUMBERED_RE.test(line)
+    const isQuestionBullet =
+      BULLET_RE.test(line) && /question/i.test(currentHeading)
+
+    if (isHeading || isNumbered || isQuestionBullet) {
       flush()
-      current = { label: anchorLabel(line), lines: [line] }
+      current = {
+        label: anchorLabel(line),
+        lines: [line],
+        isQuestion: isNumbered || isQuestionBullet,
+      }
+      if (isHeading) currentHeading = line
     } else if (current) {
       current.lines.push(line)
     } else {

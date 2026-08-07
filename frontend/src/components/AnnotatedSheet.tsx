@@ -60,15 +60,17 @@ export function AnnotatedSheet({ interviewId, sheetMd, initialNotesMd }: Props) 
       {segments.map((seg) => (
         <section key={seg.key}>
           <Markdown>{seg.markdown}</Markdown>
-          <div className="note-block">
-            <label htmlFor={`note-${seg.key}`}>Notes</label>
-            <textarea
-              id={`note-${seg.key}`}
-              placeholder={`Notes for “${seg.label}”`}
-              value={notes[seg.key] ?? ''}
-              onChange={(e) => onChange(seg.key, e.target.value)}
-            />
-          </div>
+          {seg.isQuestion && (
+            <div className="note-block">
+              <label htmlFor={`note-${seg.key}`}>Notes</label>
+              <textarea
+                id={`note-${seg.key}`}
+                placeholder={`Notes for “${seg.label}”`}
+                value={notes[seg.key] ?? ''}
+                onChange={(e) => onChange(seg.key, e.target.value)}
+              />
+            </div>
+          )}
         </section>
       ))}
     </div>
