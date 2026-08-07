@@ -36,13 +36,11 @@ Conventions the agent follows:
 ## Questions by Skill
 
 ### <Technology / Skill / Subject 1>
-_Ordered easiest → hardest._
 1. <question> — _(verify resume skill | confirm role skill)_
 2. <question> — _(verify resume skill | confirm role skill)_
 3. <question> — _(verify resume skill | confirm role skill)_
 
 ### <Technology / Skill / Subject 2>
-_Ordered easiest → hardest._
 1. <question> — _(verify resume skill | confirm role skill)_
 2. <question> — _(verify resume skill | confirm role skill)_
 
